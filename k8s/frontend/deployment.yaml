@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice-app-example
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-app-example
+  template:
+    metadata:
+      labels:
+        app: microservice-app-example
+        service: frontend
+    spec:
+      containers:
+      - env:
+        - name: AUTH_API_ADDRESS
+          value: http://auth-api:8081
+        - name: PORT
+          value: "8080"
+        - name: TODOS_API_ADDRESS
+          value: http://todos-api:8082
+        - name: ZIPKIN_URL
+          value: http://zipkin:9411/api/v2/spans
+        image: sa93/frontend:latest
+        name: frontend
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
